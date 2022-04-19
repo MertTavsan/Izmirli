@@ -2,6 +2,7 @@ package com.kafein.weatherapp
 
 
 import com.izmir.izmirli.model.GameTypeResponse
+import com.izmir.izmirli.model.IstasyonlarResponse
 import com.izmir.izmirli.model.NobetciEczaneResponse
 import com.izmir.izmirli.model.TrenGarlariResponse
 import io.reactivex.Single
@@ -11,8 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class IzmirAPIService {
 
-    private val BASE_URL = "https://openapi.izmir.bel.tr/api/ibb/"
-
+    //private val BASE_URL = "https://openapi.izmir.bel.tr/api/ibb/"
+    private val BASE_URL = "https://openapi.izmir.bel.tr/api/"
     private val api = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -28,5 +29,8 @@ class IzmirAPIService {
     }
     fun getNobetciEczane() : Single<NobetciEczaneResponse> {
         return api.getNobetciEczane()
+    }
+    fun getIstasyon() : Single<IstasyonlarResponse> {
+        return api.getIstasyon()
     }
 }

@@ -9,12 +9,13 @@ fun categoryList() : ArrayList<String> {
     with(categoryList){
         add("Hareketlilik")
         add("Yaşam")
-        add("Çevre")
+        add("ECZANE ADLARI")
+        add("ECZANE ADRESLERİ")
+        add("ECZANE TELEFONLARI")
+        add("İSTASYON ADLARI")
+        add("İSTASYON BOYLAMLARI")
         add("Yönetişim")
-        add("Kriz belediyeciliği")
-        add("Afet")
-        add("Ekonomi")
-        add("Tarım")
+
         add("Enerji")
     }
     return categoryList

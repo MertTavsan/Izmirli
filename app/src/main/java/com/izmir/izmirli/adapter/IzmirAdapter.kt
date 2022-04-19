@@ -29,7 +29,8 @@ class IzmirAdapter : RecyclerView.Adapter<IzmirAdapter.IzmirViewHolder>() {
         fun bind(s: NobetciEczaneResponse.NobetciEczaneResponseItem) {
             itemView.tv_item.text = s.adi?.lowercase()
             s.adi?.let {
-                if (it.length > 15){
+                if (it.length < 15){
+                    itemView.tv_item.text = it.uppercase()
                     itemView.tv_item.setTextColor(ContextCompat.getColor(itemView.context,
                         R.color.purple_700
                     ))
