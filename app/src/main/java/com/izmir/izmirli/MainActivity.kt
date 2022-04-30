@@ -12,10 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.izmir.izmirli.adapter.IzmirAdapter
 import com.izmir.izmirli.databinding.ActivityMainBinding
-import com.izmir.izmirli.model.GameTypeResponse
-import com.izmir.izmirli.model.IstasyonlarResponse
-import com.izmir.izmirli.model.NobetciEczaneResponse
-import com.izmir.izmirli.model.TrenGarlariResponse
+import com.izmir.izmirli.model.*
+import com.izmir.izmirli.service.DepremAPIService
 import com.izmir.izmirli.util.*
 import com.kafein.weatherapp.IzmirAPIService
 import io.reactivex.observers.DisposableSingleObserver
@@ -35,12 +33,19 @@ class MainActivity : AppCompatActivity(), Example {
     private lateinit var exampleInterface: Example
     private var izmirAPIService = IzmirAPIService()
 
+
     private var eczaneAdlari :ArrayList<String> = arrayListOf()
     private var eczaneAdresleri :ArrayList<String> = arrayListOf()
     private var eczaneTelefonlari :ArrayList<String> = arrayListOf()
 
     private var istasyonAdlari :ArrayList<String> = arrayListOf()
     private var istasyonBoylamlari :ArrayList<String> = arrayListOf()
+
+    private var trenGarlariAdi :ArrayList<String> = arrayListOf()
+
+    private var depremAPIService:DepremAPIService= DepremAPIService()
+    private var depremSiddeti:ArrayList<String> = arrayListOf()
+    private var depremResponseResult: ArrayList<DepremResponse.Result> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +132,81 @@ class MainActivity : AppCompatActivity(), Example {
                 }
             })
 
+        izmirAPIService.getTrenGarlari()
+            .subscribeOn(Schedulers.newThread())
+            .subscribeWith(object : DisposableSingleObserver<TrenGarlariResponse>() {
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun onSuccess(trenGarlariResponse: TrenGarlariResponse) {
+                    runOnUiThread {
+
+                        Log.i("response1", trenGarlariResponse.toString())
+                        //trenGarlariResponse.onemliyer?.get(0)?.aDI?.let { trenGarlariAdi.add(it) }
+
+                        trenGarlariResponse.onemliyer?.let {
+                            for (i in it){
+                                i?.aDI?.let {
+                                    trenGarlariAdi.add(it)
+                                }
+                            }
+                        }
+
+                        //filter fun -> .filter { it.bolgeId == 19 } as ArrayList<NobetciEczaneResponse.NobetciEczaneResponseItem>
+                        //izmirAdapter.setIzmirData(istasyonlar)
+                        Log.i("response1", trenGarlariResponse.toString())
+                        binding.pbLoader.visibility = View.GONE
+                    }
+                }
+                override fun onError(e: Throwable) {
+                    e.printStackTrace()
+                    Log.i("responseError", e.message.toString())
+                }
+            })
+
+        depremAPIService.getDepremler()
+            .subscribeOn(Schedulers.newThread())
+            .subscribeWith(object : DisposableSingleObserver<DepremResponse>() {
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun onSuccess(depremResponse: DepremResponse) {
+                    runOnUiThread {
+
+                        Log.i("responseDeprem", depremResponse.toString())
+                        //trenGarlariResponse.onemliyer?.get(0)?.aDI?.let { trenGarlariAdi.add(it) }
+
+                        depremResponse.result?.let {
+
+                            for (i in it){
+                               /* i?.let {
+                                    depremResponseResult.add(it)
+                                }*/
+
+                                i?.lokasyon?.let {
+                                   var m=it
+                                    i?.mag?.let {
+                                        if(it>2.5){
+                                            m=m+" : "+it.toString()
+                                            depremSiddeti.add(m)
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+
+
+
+                        //filter fun -> .filter { it.bolgeId == 19 } as ArrayList<NobetciEczaneResponse.NobetciEczaneResponseItem>
+                        //izmirAdapter.setIzmirData(istasyonlar)
+                        //Log.i("response1", trenGarlariResponse.toString())
+                        binding.pbLoader.visibility = View.GONE
+                    }
+                }
+                override fun onError(e: Throwable) {
+                    e.printStackTrace()
+                    Log.i("responseError", e.message.toString())
+                }
+            })
+
 
         binding.apply {
             izmirAdapter.eczaneClickListener = {
@@ -144,13 +224,16 @@ class MainActivity : AppCompatActivity(), Example {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tbSubCategory.removeAllTabs()
                     when(tab?.position){
-                        0 -> { tbSubCategory.autoFillList(subCategoryList()) }
-                        1 -> { tbSubCategory.autoFillList(subCategoryList2()) }
+
+                        0 -> { tbSubCategory.autoFillList(depremSiddeti) }
+                        1 -> { tbSubCategory.autoFillList(trenGarlariAdi) }
                         2 -> {tbSubCategory.autoFillList(eczaneAdlari)}
                         3 -> {tbSubCategory.autoFillList(eczaneAdresleri)}
                         4 -> {tbSubCategory.autoFillList(eczaneTelefonlari)}
                         5 -> {tbSubCategory.autoFillList(istasyonAdlari)}
                         6 -> {tbSubCategory.autoFillList(istasyonBoylamlari)}
+                        7-> {tbSubCategory.autoFillList(subCategoryList())}
+                        8-> {tbSubCategory.autoFillList(subCategoryList2())}
 
 
                     }

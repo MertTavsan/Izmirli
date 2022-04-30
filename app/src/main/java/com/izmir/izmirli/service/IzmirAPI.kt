@@ -13,7 +13,7 @@ interface IzmirAPI {
     // BASEurl -> https://openapi.izmir.bel.tr/api/ibb/
     // EXTurl -> cbs/trengarlari
     companion object{
-        const val TREN_GARLARI = "cbs/trengarlari"
+        const val TREN_GARLARI = "ibb/cbs/trengarlari"
         const val GAME_TYPE = "gameType"
         const val NOBETCI_ECZANE = "ibb/nobetcieczaneler"
         const val ISTASYONLAR = "izban/istasyonlar"

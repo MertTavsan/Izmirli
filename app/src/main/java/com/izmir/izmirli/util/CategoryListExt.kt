@@ -7,15 +7,15 @@ import com.google.android.material.tabs.TabLayout
 fun categoryList() : ArrayList<String> {
     var categoryList: ArrayList<String> = arrayListOf()
     with(categoryList){
-        add("Hareketlilik")
-        add("Yaşam")
+        add("DEPREMLER API ÖDEV YER : BÜYÜKLÜK")
+        add("TREN GARLARI ADI")
         add("ECZANE ADLARI")
         add("ECZANE ADRESLERİ")
         add("ECZANE TELEFONLARI")
         add("İSTASYON ADLARI")
         add("İSTASYON BOYLAMLARI")
-        add("Yönetişim")
-
+        add("Hareketlilik")
+        add("Yaşam")
         add("Enerji")
     }
     return categoryList
